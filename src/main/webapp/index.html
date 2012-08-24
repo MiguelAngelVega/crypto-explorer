@@ -9,76 +9,103 @@
     <script type="text/javascript" src="crypto-explorer.js"></script>
 </head>
 <body ng-controller="security">
-    <div class="container">
+<div class="container">
 
-        <h1>Crypto Explorer</h1>
+    <h1>Crypto Explorer</h1>
 
-        <div class="row">
-            <div class="span4">
-                <div class="well">
-                    <div class="form-search">
-                        <label for="search">Search</label>
-                        <input id="search" type="search" ng-model="query">
-                    </div>
-                    <ul class="nav nav-list">
-                        <li ng-repeat="service in serviceList | filter:query">
-                            <a ng-click="selectService(service)">
-                                <i class="icon-chevron-right" style="float:right;"></i>
-                                {{service.description}}
+    <div class="row">
+        <div class="span4">
+            <div class="well">
+                <div class="form-search">
+                    <label for="search">Search</label>
+                    <input id="search" type="search" ng-model="query">
+                </div>
+                <ul class="nav nav-list">
+                    <li ng-repeat="service in serviceList | filter:query">
+                        <a ng-click="selectService(service)">
+                            <i class="icon-chevron-right" style="float:right;"></i>
+                            {{service.description}}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="span8" ng-show="selectedService">
+            <div class="well">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <th>
+                        Algorithm
+                    </th>
+                    <th>
+                        Provider
+                    </th>
+
+                    <th ng-show="hasDetail">
+                        Actions
+                    </th>
+
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="element in selectedService">
+                        <td>
+                            {{element.algorithm}}
+                        </td>
+                        <td>
+                            {{element.provider}}
+                        </td>
+
+                        <td ng-show="hasDetail">
+                            <a class="btn btn-primary" ng-click="selectElement(element)">
+                                more
+                                <i class="icon-white icon-chevron-down"></i>
                             </a>
-                        </li>
-                    </ul>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div ng-show="currentElement && hasDetail == 'SecureRandom'">
+                <div class="well">
+                    <form>
+                        <h4>Operate on a secure random {{currentElement.algorithm}} provided by {{currentElement.provider}}</h4>
+                        <div class="form-actions">
+                            <button class="btn btn-success" ng-click="findSecureRandoms(currentElement)">
+                                find 90 random numbers
+                                <i class="icon-white icon-ok"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <div ng-show="randoms" class="row">
+                        <div class="container-fluid">
+                            <h4>Comming up... 90 secure random numbers</h4>
+                        </div>
+                        <div class="span1" ng-repeat="random in randoms" style="text-align: right">
+                            {{random}}
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="span8" ng-show="selectedService">
+            <div ng-show="currentElement && hasDetail == 'KeyStore'">
                 <div class="well">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                        <th>
-                            Algorithm
-                        </th>
-                        <th>
-                            Provider
-                        </th>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="element in selectedService">
-                            <td>
-                                {{element.algorithm}}
-                            </td>
-                            <td>
-                                {{element.provider}}
-                            </td>
+                    <form>
+                        <label for="key-store-path">KeyStore Path on the server</label>
+                        <input type="text" id="key-store-path" ng-model="keystore.path">
 
-                            <td ng-show="hasDetail">
-                                <a class="btn btn-primary" ng-click="selectSecureRandom(element)">
-                                    more
-                                    <i class="icon-white icon-chevron-down"></i>
-                                </a>
-                            </td>
+                        <label for="key-store-password">Password</label>
+                        <input type="password" id="key-store-password" ng-model="keystore.password">
 
-                        </tr>
-                        </tbody>
-                    </table>
+                        <div class="form-actions">
+                            <button class="btn btn-primary" ng-click="listKeystore(currentElement, keystore)">
+                                List entries
+                                <i class="icon-white icon-chevron-down"></i>
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <div ng-show="selectedSecureRandom">
-                    <div class="well">
-                        <form>
-                            <div class="form-actions">
-                                <button class="btn btn-success" ng-click="findSecureRandoms()">
-                                    <i class="icon-white icon-ok"></i> find 90 random numbers
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div ng-show="randoms" class="row">
-                        <div class="span1" ng-repeat="random in randoms" style="text-align: right">{{random}}</span>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>

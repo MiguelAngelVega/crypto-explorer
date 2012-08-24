@@ -13,8 +13,9 @@
  * License. under the License.
  */
 
+
 function security($scope, $http) {
-    $http.get('security/services/list').success(function(data) {
+    $http.get('security/services/list').success(function (data) {
         $scope.serviceList = data;
     });
 
@@ -23,17 +24,26 @@ function security($scope, $http) {
             $scope.selectedService = data;
         });
         $scope.hasDetail = service.hasDetail;
-        $scope.selectedSecureRandom = undefined;
+        $scope.currentElement = undefined;
     };
 
-    $scope.selectSecureRandom = function (element) {
-        $scope.selectedSecureRandom = element
+    $scope.selectElement = function (element) {
+        $scope.currentElement = element
     };
 
-    $scope.findSecureRandoms = function() {
-        var ssr = $scope.selectedSecureRandom;
-        $http.post('security/SecureRandom/' + ssr.algorithm + '/' + ssr.provider).success(function(data) {
+    $scope.findSecureRandoms = function (ssr) {
+        $http.post('security/SecureRandom/' + ssr.algorithm + '/' + ssr.provider).success(function (data) {
             $scope.randoms = data;
         });
+    };
+
+    $scope.listKeystore = function (ssr, data) {
+        $http.post('security/KeyStore/' + ssr.algorithm + '/' + ssr.provider + '/list', data).
+            success(function (data) {
+                alert(data);
+            }).
+            error(function(data, status, headers, config) {
+                alert(data + status + headers + config);
+            });
     };
 }

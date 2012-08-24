@@ -3,7 +3,6 @@ package cryptoexplorer;
 import com.google.gson.Gson;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
@@ -13,6 +12,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.security.SecureRandom.getInstance;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static javax.ws.rs.core.Response.status;
 
 /**
  * @author Marcelo Morales
@@ -33,9 +33,9 @@ public class SecureRandomRest {
             }
             return new Gson().toJson(objects);
         } catch (NoSuchAlgorithmException e) {
-            throw new WebApplicationException(Response.status(NOT_FOUND).entity(e.getMessage()).build());
+            throw new WebApplicationException(status(NOT_FOUND).entity(e.getMessage()).build());
         } catch (NoSuchProviderException e) {
-            throw new WebApplicationException(Response.status(NOT_FOUND).entity(e.getMessage()).build());
+            throw new WebApplicationException(status(NOT_FOUND).entity(e.getMessage()).build());
         }
     }
 }

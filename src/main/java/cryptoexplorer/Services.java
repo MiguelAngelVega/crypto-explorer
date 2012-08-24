@@ -24,7 +24,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.security.Provider;
-import java.security.SecureRandom;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeSet;
@@ -43,7 +42,7 @@ public class Services {
     @Path("/list")
     public String servicesList() {
 
-        ImmutableSet<String> hasDetail = ImmutableSet.of(SecureRandom.class.getSimpleName());
+        ImmutableSet<String> hasDetail = ImmutableSet.of("KeyStore", "SecureRandom");
 
         TreeSet<Map<String, String>> elements = newMapOrderedBy("name");
 
