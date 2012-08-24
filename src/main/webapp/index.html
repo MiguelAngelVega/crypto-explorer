@@ -14,6 +14,16 @@
     <h1>Crypto Explorer</h1>
 
     <div class="row">
+
+        <div ng-show="feedback" class="span12">
+            <div class="alert alert-error">
+                <button type="button" class="close" ng-click="close()">×</button>
+                <div ng-repeat="feedbackMessage in feedback">
+                    {{feedbackMessage}}
+                </div>
+            </div>
+        </div>
+
         <div class="span4">
             <div class="well">
                 <div class="form-search">
@@ -25,14 +35,17 @@
                         <a ng-click="selectService(service)">
                             <i class="icon-chevron-right" style="float:right;"></i>
                             {{service.description}}
+                            <span ng-show="service.hasDetail">*</span>
                         </a>
                     </li>
                 </ul>
+                <p>* = Has detail</p>
             </div>
         </div>
 
         <div class="span8" ng-show="selectedService">
             <div class="well">
+                <h3>The current machine supports the following algorithms for {{selectedService.service.description}}</h3>
                 <table class="table table-bordered table-striped">
                     <thead>
                     <th>
@@ -42,7 +55,7 @@
                         Provider
                     </th>
 
-                    <th ng-show="hasDetail">
+                    <th ng-show="selectedService.service.hasDetail">
                         Actions
                     </th>
 
@@ -56,7 +69,7 @@
                             {{element.provider}}
                         </td>
 
-                        <td ng-show="hasDetail">
+                        <td ng-show="selectedService.service.hasDetail">
                             <a class="btn btn-primary" ng-click="selectElement(element)">
                                 more
                                 <i class="icon-white icon-chevron-down"></i>
@@ -67,20 +80,20 @@
                 </table>
             </div>
 
-            <div ng-show="currentElement && hasDetail == 'SecureRandom'">
+            <div ng-show="currentElement && selectedService.service.hasDetail == 'SecureRandom'">
                 <div class="well">
                     <form>
                         <h4>Operate on a secure random {{currentElement.algorithm}} provided by {{currentElement.provider}}</h4>
                         <div class="form-actions">
                             <button class="btn btn-success" ng-click="findSecureRandoms(currentElement)">
-                                find 90 random numbers
+                                find 119 random numbers
                                 <i class="icon-white icon-ok"></i>
                             </button>
                         </div>
                     </form>
                     <div ng-show="randoms" class="row">
                         <div class="container-fluid">
-                            <h4>Comming up... 90 secure random numbers</h4>
+                            <h4>Comming up... 119 secure random positive numbers smaller than a million</h4>
                         </div>
                         <div class="span1" ng-repeat="random in randoms" style="text-align: right">
                             {{random}}
@@ -89,9 +102,10 @@
                 </div>
             </div>
 
-            <div ng-show="currentElement && hasDetail == 'KeyStore'">
+            <div ng-show="currentElement && selectedService.service.hasDetail == 'KeyStore'">
                 <div class="well">
                     <form>
+                        <h4>Query a {{currentElement.algorithm}} Key Store on the server</h4>
                         <label for="key-store-path">KeyStore Path on the server</label>
                         <input type="text" id="key-store-path" ng-model="keystore.path">
 
@@ -106,8 +120,38 @@
                         </div>
                     </form>
                 </div>
+
+                <div class="well" ng-show="keystoreContents">
+                    <h4>Ta da!</h4>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <th>
+                            Alias
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="keystoreElement in keystoreContents">
+                            <td>
+                                {{keystoreElement.alias}}
+                            </td>
+                            <td>
+                                <a class="btn" ng-show="keystoreElement.isCert">
+                                    What can I do with a certificate?
+                                </a>
+                                <a class="btn" ng-show="keystoreElement.isKey">
+                                    What can I do with a key pair?
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+</div>
 </body>
 </html>

@@ -13,7 +13,7 @@
  * License. under the License.
  */
 
-
+//noinspection JSUnusedGlobalSymbols
 function security($scope, $http) {
     $http.get('security/services/list').success(function (data) {
         $scope.serviceList = data;
@@ -22,8 +22,8 @@ function security($scope, $http) {
     $scope.selectService = function (service) {
         $http.get('security/services/describe/' + service.name).success(function (data) {
             $scope.selectedService = data;
+            $scope.selectedService.service = service;
         });
-        $scope.hasDetail = service.hasDetail;
         $scope.currentElement = undefined;
     };
 
@@ -34,16 +34,35 @@ function security($scope, $http) {
     $scope.findSecureRandoms = function (ssr) {
         $http.post('security/SecureRandom/' + ssr.algorithm + '/' + ssr.provider).success(function (data) {
             $scope.randoms = data;
+            $scope.keystoreContents = undefined;
         });
     };
 
     $scope.listKeystore = function (ssr, data) {
+        if (!data) {
+            data = {};
+        }
         $http.post('security/KeyStore/' + ssr.algorithm + '/' + ssr.provider + '/list', data).
             success(function (data) {
-                alert(data);
+                $scope.keystoreContents = data;
+                if ($scope.keystoreContents && $scope.keystoreContents.toString() == '') {
+                    if (!$scope.feedback) {
+                        $scope.feedback = [];
+                    }
+                    $scope.feedback.push("Sorry! No certificates there ;)");
+                }
             }).
             error(function(data, status, headers, config) {
-                alert(data + status + headers + config);
+                $scope.keystoreContents = undefined;
+                if (!$scope.feedback) {
+                    $scope.feedback = [];
+                }
+                $scope.feedback.push(data + ' (status = ' + status + ')');
+                // alert(data + status + headers + config);
             });
+    };
+
+    $scope.close = function(feedbackMessage) {
+        $scope.feedback = undefined
     };
 }

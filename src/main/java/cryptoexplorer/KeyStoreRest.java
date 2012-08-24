@@ -63,11 +63,12 @@ public class KeyStoreRest {
 
             Enumeration<String> aliasesEnumeration = keyStore.aliases();
             while (aliasesEnumeration.hasMoreElements()) {
-                String s = aliasesEnumeration.nextElement();
+                String alias = aliasesEnumeration.nextElement();
 
-                aliases.add(ImmutableMap.of("alias", s,
-                        "isKey", Boolean.toString(keyStore.isKeyEntry(s)),
-                        "isCert", Boolean.toString(keyStore.isCertificateEntry(s))));
+                aliases.add(ImmutableMap.of(
+                        "alias", alias,
+                        "isKey", Boolean.toString(keyStore.isKeyEntry(alias)),
+                        "isCert", Boolean.toString(keyStore.isCertificateEntry(alias))));
             }
 
             return gson.toJson(aliases);

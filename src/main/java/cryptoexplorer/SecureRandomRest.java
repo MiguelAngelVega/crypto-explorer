@@ -28,8 +28,8 @@ public class SecureRandomRest {
         try {
             SecureRandom secureRandom = getInstance(algorithm, provider);
             ArrayList<Integer> objects = newArrayList();
-            for (int i = 0; i < 90; i++) {
-                objects.add(secureRandom.nextInt(1000000));
+            for (int i = 0; i < 119; i++) {
+                objects.add(secureRandom.nextInt(1));
             }
             return new Gson().toJson(objects);
         } catch (NoSuchAlgorithmException e) {
