@@ -16,12 +16,15 @@
 package cryptoexplorer;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.security.Provider;
+import java.security.SecureRandom;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeSet;
@@ -40,27 +43,50 @@ public class Services {
     @Path("/list")
     public String servicesList() {
 
-        TreeSet<Map<String, String>> elements = newTreeSet(new Comparator<Map<String, String>>() {
+        ImmutableSet<String> hasDetail = ImmutableSet.of(SecureRandom.class.getSimpleName());
 
-            @Override
-            public int compare(Map<String, String> o1, Map<String, String> o2) {
-                return o1.get("name").compareTo(o2.get("name"));
-            }
-        });
+        TreeSet<Map<String, String>> elements = newMapOrderedBy("name");
 
-        for (Provider provider :getProviders()) {
+        for (Provider provider : getProviders()) {
             for (Service service : provider.getServices()) {
                 String type = service.getType();
-                elements.add(ImmutableMap.of("name", type, "description", type.replaceAll(
-                        format("%s|%s|%s",
-                                "(?<=[A-Z])(?=[A-Z][a-z])",
-                                "(?<=[^A-Z])(?=[A-Z])",
-                                "(?<=[A-Za-z])(?=[^A-Za-z])"), " ")));
+                elements.add(ImmutableMap.of(
+                        "name", type,
+                        "description", type.replaceAll(format("%s|%s|%s", "(?<=[A-Z])(?=[A-Z][a-z])",
+                        "(?<=[^A-Z])(?=[A-Z])",
+                        "(?<=[A-Za-z])(?=[^A-Za-z])"), " "),
+                        "hasDetail", hasDetail.contains(type)?type:"false"));
             }
         }
 
         return new Gson().toJson(elements);
     }
 
+    @GET
+    @Path("/describe/{service}")
+    public String describe(@PathParam("service") String service) {
 
+        TreeSet<Map<String, String>> elements = newMapOrderedBy("provider");
+
+        for (Provider provider : getProviders()) {
+            for (Service providerService : provider.getServices()) {
+                if (providerService.getType().equals(service)) {
+                    elements.add(ImmutableMap.of("algorithm", providerService.getAlgorithm(), "provider",
+                            provider.getName()));
+                }
+            }
+        }
+
+        return new Gson().toJson(elements);
+    }
+
+    private static TreeSet<Map<String, String>> newMapOrderedBy(final String sortKey) {
+        return newTreeSet(new Comparator<Map<String, String>>() {
+
+            @Override
+            public int compare(Map<String, String> o1, Map<String, String> o2) {
+                return o1.get(sortKey).compareTo(o2.get(sortKey));
+            }
+        });
+    }
 }

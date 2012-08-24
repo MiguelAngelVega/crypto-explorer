@@ -13,9 +13,27 @@
  * License. under the License.
  */
 
-function getProvidersList($scope, $http) {
+function security($scope, $http) {
     $http.get('security/services/list').success(function(data) {
-        $scope.providerList = data;
+        $scope.serviceList = data;
     });
 
+    $scope.selectService = function (service) {
+        $http.get('security/services/describe/' + service.name).success(function (data) {
+            $scope.selectedService = data;
+        });
+        $scope.hasDetail = service.hasDetail;
+        $scope.selectedSecureRandom = undefined;
+    };
+
+    $scope.selectSecureRandom = function (element) {
+        $scope.selectedSecureRandom = element
+    };
+
+    $scope.findSecureRandoms = function() {
+        var ssr = $scope.selectedSecureRandom;
+        $http.post('security/SecureRandom/' + ssr.algorithm + '/' + ssr.provider).success(function(data) {
+            $scope.randoms = data;
+        });
+    };
 }
