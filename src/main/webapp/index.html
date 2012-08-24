@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app>
+<head>
+    <title>Crypto explorer</title>
+    <link rel="stylesheet" href="bootstrap.css">
+    <script type="text/javascript" src="angular-1.0.1.min.js"></script>
+    <script type="text/javascript" src="angular-bootstrap-1.0.1.min.js"></script>
+    <script type="text/javascript" src="crypto-explorer.js"></script>
+</head>
+<body>
+    <div class="container" ng-controller="getProvidersList">
+        <div class="row">
+            <div class="span3">
+                <ul class="nav nav-list">
+                    <li ng-repeat="provider in providerList">
+                        <a href="#{{provider.name}}">
+                            <i class="icon-chevron-right" style="float:right;"></i>
+                            {{provider.description}}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

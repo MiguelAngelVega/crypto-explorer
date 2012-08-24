@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-    <display-name>cryptocheck</display-name>
+    <display-name>crypto-explorer</display-name>
 
-    <context-param>
-        <param-name>wicket.configuration</param-name>
-        <param-value>deployment</param-value>
-    </context-param>
-    <filter>
-        <filter-name>wicket.cryptocheck</filter-name>
-        <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+    <servlet>
+        <servlet-name>Jersey</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
         <init-param>
-            <param-name>applicationClassName</param-name>
-            <param-value>name.marcelomorales.cryptocheck.WicketApplication</param-value>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>cryptoexplorer</param-value>
         </init-param>
-    </filter>
+    </servlet>
 
-    <filter-mapping>
-        <filter-name>wicket.cryptocheck</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+    <servlet-mapping>
+        <servlet-name>Jersey</servlet-name>
+        <url-pattern>/security/*</url-pattern>
+    </servlet-mapping>
 
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
 
 </web-app>
